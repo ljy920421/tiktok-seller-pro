@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TikTok Seller Pro - Settings</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #eee;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .form-row + .form-row {
+      border-top: 1px solid #f5f5f5;
+    }
+
+    .form-label {
+      font-size: 14px;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    select, input[type="number"], input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      min-width: 120px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ccc;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 2px;
+      bottom: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .toggle input:checked + .toggle-slider { background: #059669; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* COGS Table */
+    .cogs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .cogs-table th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cogs-table td {
+      padding: 8px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .cogs-table input {
+      width: 80px;
+      padding: 4px 8px;
+    }
+
+    .cogs-add-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .cogs-add-row input { flex: 1; }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: #059669;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #047857; }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #dc2626;
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
+    .btn-danger:hover { background: #fecaca; }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover { background: #e5e5e5; }
+
+    .save-bar {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 16px 20px;
+      border-top: 1px solid #eee;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+
+    .save-status {
+      font-size: 13px;
+      color: #059669;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .save-status.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <h1>TikTok Seller Pro</h1>
+  <p class="subtitle">Settings & Configuration</p>
+
+  <!-- General Settings -->
+  <div class="card">
+    <div class="card-title">General</div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Market Region</div>
+        <div class="form-hint">Determines fee rates (US 6%, UK/EU 9%)</div>
+      </div>
+      <select id="region">
+        <option value="US">United States (6%)</option>
+        <option value="UK">United Kingdom (9%)</option>
+        <option value="EU">Europe (9%)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">New Seller Discount</div>
+        <div class="form-hint">First 30 days get reduced referral fee</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="isNewSeller">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Default Shipping Cost</div>
+        <div class="form-hint">Applied when no specific shipping is set</div>
+      </div>
+      <input type="number" id="shippingCost" min="0" step="0.01" placeholder="0.00">
+    </div>
+  </div>
+
+  <!-- Display Settings -->
+  <div class="card">
+    <div class="card-title">Display</div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Show Profit Overlay</div>
+        <div class="form-hint">Profit badges on order/product pages</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="showProfitOverlay" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Show Dashboard Summary</div>
+        <div class="form-hint">Profit summary bar on dashboard</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="showDashboardSummary" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Privacy & Data -->
+  <div class="card">
+    <div class="card-title">Privacy & Data</div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Help Improve Compatibility</div>
+        <div class="form-hint">Anonymously share DOM structure data to help the extension adapt to TikTok updates. No personal or business data is collected.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="enableDomReport" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- COGS Management -->
+  <div class="card">
+    <div class="card-title">Cost of Goods Sold (COGS)</div>
+    <div class="form-row">
+      <div>
+        <div class="form-label">Default COGS per Unit</div>
+        <div class="form-hint">Used when product-specific COGS is not set</div>
+      </div>
+      <input type="number" id="defaultCogs" min="0" step="0.01" placeholder="0.00">
+    </div>
+
+    <table class="cogs-table">
+      <thead>
+        <tr>
+          <th>Product ID / Name</th>
+          <th>COGS ($)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="cogsTableBody">
+        <!-- Dynamically populated -->
+      </tbody>
+    </table>
+
+    <div class="cogs-add-row">
+      <input type="text" id="newCogsId" placeholder="Product ID or Name">
+      <input type="number" id="newCogsCost" min="0" step="0.01" placeholder="Cost" style="min-width:80px;flex:none;">
+      <button class="btn btn-primary" id="addCogs">Add</button>
+    </div>
+  </div>
+
+  <!-- Save Bar -->
+  <div class="save-bar">
+    <span class="save-status" id="saveStatus">Settings saved</span>
+    <div>
+      <button class="btn btn-secondary" id="resetBtn" style="margin-right:8px;">Reset to Defaults</button>
+      <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

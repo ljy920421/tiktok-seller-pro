@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Screenshot Generator - TikTok Seller Pro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #111; color: #fff; padding: 20px; }
+    h2 { margin: 30px 0 10px; color: #34d399; }
+    p.hint { color: #888; font-size: 13px; margin-bottom: 10px; }
+
+    /* Each screenshot frame */
+    .screenshot {
+      width: 1280px;
+      height: 800px;
+      border: 2px solid #333;
+      margin-bottom: 40px;
+      overflow: hidden;
+      position: relative;
+      background: #f5f6fa;
+      color: #1a1a2e;
+    }
+
+    /* Mock TikTok Seller Center chrome */
+    .mock-topbar { background: #fff; height: 56px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e8e8e8; }
+    .mock-topbar .logo { font-size: 18px; font-weight: 700; color: #161823; }
+    .mock-topbar .logo span { color: #fe2c55; }
+    .mock-topbar .nav-items { margin-left: auto; display: flex; gap: 24px; font-size: 14px; color: #666; }
+
+    .mock-layout { display: flex; height: 744px; }
+    .mock-sidebar { width: 220px; background: #fff; border-right: 1px solid #e8e8e8; padding: 16px 0; }
+    .mock-sidebar .section-title { padding: 8px 24px; font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; margin-top: 12px; }
+    .mock-sidebar a { display: block; padding: 10px 24px; color: #666; text-decoration: none; font-size: 14px; }
+    .mock-sidebar a.active { color: #161823; font-weight: 600; background: #f0f1f5; border-right: 3px solid #161823; }
+
+    .mock-main { flex: 1; padding: 24px; overflow: hidden; }
+    .page-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+
+    /* Metrics */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid #e8e8e8; }
+    .metric-card .label { font-size: 13px; color: #888; margin-bottom: 8px; }
+    .metric-card .value { font-size: 28px; font-weight: 700; }
+    .metric-card .change { font-size: 12px; margin-top: 4px; }
+    .metric-card .change.up { color: #059669; }
+    .metric-card .change.down { color: #dc2626; }
+
+    /* Table */
+    .table-container { background: #fff; border-radius: 8px; border: 1px solid #e8e8e8; }
+    .table-header { padding: 16px 20px; border-bottom: 1px solid #e8e8e8; font-size: 16px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: #888; background: #fafafa; border-bottom: 1px solid #e8e8e8; }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+    .product-cell { display: flex; align-items: center; gap: 10px; }
+    .product-img { width: 40px; height: 40px; border-radius: 6px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .product-name { font-size: 13px; }
+    .product-sku { font-size: 11px; color: #999; }
+    .price { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+    .status-completed { background: #ecfdf5; color: #059669; }
+    .status-shipping { background: #eff6ff; color: #2563eb; }
+    .status-pending { background: #fefce8; color: #ca8a04; }
+
+    /* Extension styles */
+    .tsp-profit-badge { display: inline-flex; align-items: center; padding: 2px 8px; margin-left: 8px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; vertical-align: middle; }
+    .tsp-profit-positive { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .tsp-profit-negative { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+    .tsp-dashboard-bar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 16px 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .tsp-dashboard-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; opacity: 0.9; }
+    .tsp-dashboard-metrics { display: flex; gap: 32px; }
+    .tsp-metric { flex: 1; }
+    .tsp-metric-label { font-size: 12px; opacity: 0.7; margin-bottom: 4px; }
+    .tsp-metric-value { font-size: 24px; font-weight: 700; color: #34d399; }
+    .tsp-metric-sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+
+    /* Callout annotations */
+    .callout { position: absolute; background: #fe2c55; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; z-index: 10; }
+    .callout::after { content: ''; position: absolute; width: 0; height: 0; border: 8px solid transparent; }
+    .callout.arrow-down::after { border-top-color: #fe2c55; bottom: -16px; left: 50%; transform: translateX(-50%); }
+    .callout.arrow-up::after { border-bottom-color: #fe2c55; top: -16px; left: 50%; transform: translateX(-50%); }
+    .callout.arrow-left::after { border-right-color: #fe2c55; left: -16px; top: 50%; transform: translateY(-50%); }
+
+    /* Fee breakdown modal overlay for screenshot 3 */
+    .tsp-modal-overlay { position: absolute; top: 0; left: 220px; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 20; }
+    .tsp-modal { background: #fff; border-radius: 12px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; color: #1a1a2e; }
+    .tsp-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+    .tsp-modal-title { font-size: 16px; font-weight: 600; }
+    .tsp-modal-body { padding: 16px 20px; }
+    .tsp-fee-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; color: #333; }
+    .tsp-fee-row.tsp-fee-deduct { color: #888; }
+    .tsp-fee-row.tsp-fee-deduct .tsp-fee-value { color: #dc2626; }
+    .tsp-fee-row.tsp-fee-total { border-top: 2px solid #e5e5e5; margin-top: 8px; padding-top: 12px; }
+    .tsp-fee-row.tsp-fee-total .tsp-fee-value { color: #059669; font-weight: 700; }
+    .tsp-fee-value { font-weight: 500; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+<h2>Screenshot 1: Dashboard with Profit Summary (1280x800)</h2>
+<p class="hint">Right-click > "Save image as" or use browser screenshot tool</p>
+
+<div class="screenshot" id="ss1">
+  <div class="mock-topbar">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+    <div class="nav-items"><span>Help</span><span>Account</span></div>
+  </div>
+  <div class="mock-layout">
+    <div class="mock-sidebar">
+      <div class="section-title">Order</div>
+      <a>Manage Orders</a>
+      <div class="section-title">Product</div>
+      <a>Manage Products</a>
+      <div class="section-title">Analytics</div>
+      <a class="active">Dashboard</a>
+    </div>
+    <div class="mock-main">
+      <h2 class="page-title">Dashboard</h2>
+      <div class="tsp-dashboard-bar">
+        <div class="tsp-dashboard-title">TikTok Seller Pro - Profit Summary</div>
+        <div class="tsp-dashboard-metrics">
+          <div class="tsp-metric"><div class="tsp-metric-label">Today</div><div class="tsp-metric-value">$137.22</div><div class="tsp-metric-sub">6 orders | 66.6% margin</div></div>
+          <div class="tsp-metric"><div class="tsp-metric-label">This Week</div><div class="tsp-metric-value">$856.33</div><div class="tsp-metric-sub">38 orders | 66.7% margin</div></div>
+          <div class="tsp-metric"><div class="tsp-metric-label">This Month</div><div class="tsp-metric-value">$3,233.50</div><div class="tsp-metric-sub">142 orders | 66.7% margin</div></div>
+        </div>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="label">Revenue (Today)</div><div class="value">$1,284.50</div><div class="change up">+12.3%</div></div>
+        <div class="metric-card"><div class="label">Orders (Today)</div><div class="value">23</div><div class="change up">+5</div></div>
+        <div class="metric-card"><div class="label">Visitors</div><div class="value">1,892</div><div class="change down">-3.2%</div></div>
+        <div class="metric-card"><div class="label">Conversion</div><div class="value">1.22%</div><div class="change up">+0.1%</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout arrow-down" style="top:70px;left:480px;">Real-time Profit Summary</div>
+</div>
+
+<h2>Screenshot 2: Order List with Profit Badges (1280x800)</h2>
+<p class="hint">Shows profit badge next to each order amount</p>
+
+<div class="screenshot" id="ss2">
+  <div class="mock-topbar">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+    <div class="nav-items"><span>Help</span><span>Account</span></div>
+  </div>
+  <div class="mock-layout">
+    <div class="mock-sidebar">
+      <div class="section-title">Order</div>
+      <a class="active">Manage Orders</a>
+      <div class="section-title">Product</div>
+      <a>Manage Products</a>
+      <div class="section-title">Analytics</div>
+      <a>Dashboard</a>
+    </div>
+    <div class="mock-main">
+      <h2 class="page-title">Manage Orders</h2>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Order Amount</th><th>Status</th><th>Created</th></tr></thead>
+          <tbody>
+            <tr><td>TS20260404001</td><td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">iPhone 15 Clear Case</div><div class="product-sku">SKU: CASE-001</div></div></td><td>2</td><td class="price">$49.98 <span class="tsp-profit-badge tsp-profit-positive">+$41.47</span></td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-04</td></tr>
+            <tr><td>TS20260404002</td><td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds Pro TWS</div><div class="product-sku">SKU: EAR-001</div></div></td><td>1</td><td class="price">$29.99 <span class="tsp-profit-badge tsp-profit-positive">+$22.86</span></td><td><span class="status-badge status-shipping">Shipping</span></td><td>2026-04-04</td></tr>
+            <tr><td>TS20260404003</td><td class="product-cell"><div class="product-img">👕</div><div><div class="product-name">Cotton Tee Oversized Black</div><div class="product-sku">SKU: TEE-001</div></div></td><td>3</td><td class="price">$44.97 <span class="tsp-profit-badge tsp-profit-positive">+$36.79</span></td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-04</td></tr>
+            <tr><td>TS20260404004</td><td class="product-cell"><div class="product-img">💄</div><div><div class="product-name">Lipstick Set 6 Colors Matte</div><div class="product-sku">SKU: LIP-001</div></div></td><td>1</td><td class="price">$18.99 <span class="tsp-profit-badge tsp-profit-positive">+$12.65</span></td><td><span class="status-badge status-pending">Pending</span></td><td>2026-04-04</td></tr>
+            <tr><td>TS20260404005</td><td class="product-cell"><div class="product-img">🔌</div><div><div class="product-name">USB-C Fast Charger 65W GaN</div><div class="product-sku">SKU: CHG-001</div></div></td><td>1</td><td class="price">$35.99 <span class="tsp-profit-badge tsp-profit-positive">+$28.46</span></td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-03</td></tr>
+            <tr><td>TS20260404006</td><td class="product-cell"><div class="product-img">🧴</div><div><div class="product-name">Vitamin C Serum 30ml</div><div class="product-sku">SKU: SKIN-001</div></div></td><td>2</td><td class="price">$25.98 <span class="tsp-profit-badge tsp-profit-positive">+$19.16</span></td><td><span class="status-badge status-shipping">Shipping</span></td><td>2026-04-03</td></tr>
+            <tr><td>TS20260404007</td><td class="product-cell"><div class="product-img">🎒</div><div><div class="product-name">Travel Backpack 40L</div><div class="product-sku">SKU: BAG-001</div></div></td><td>1</td><td class="price">$3.99 <span class="tsp-profit-badge tsp-profit-negative">-$1.29</span></td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-03</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="callout arrow-left" style="top:260px;right:280px;">Instant profit per order</div>
+  <div class="callout arrow-up" style="bottom:60px;right:320px;">Loss warning in red</div>
+</div>
+
+<h2>Screenshot 3: Fee Breakdown Modal (1280x800)</h2>
+<p class="hint">Shows detailed fee breakdown when clicking a profit badge</p>
+
+<div class="screenshot" id="ss3">
+  <div class="mock-topbar">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+    <div class="nav-items"><span>Help</span><span>Account</span></div>
+  </div>
+  <div class="mock-layout">
+    <div class="mock-sidebar">
+      <div class="section-title">Order</div>
+      <a class="active">Manage Orders</a>
+      <div class="section-title">Product</div>
+      <a>Manage Products</a>
+      <div class="section-title">Analytics</div>
+      <a>Dashboard</a>
+    </div>
+    <div class="mock-main" style="opacity:0.5;">
+      <h2 class="page-title">Manage Orders</h2>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Order Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>TS20260404001</td><td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">iPhone 15 Clear Case</div></div></td><td>2</td><td class="price">$49.98 <span class="tsp-profit-badge tsp-profit-positive">+$41.47</span></td><td><span class="status-badge status-completed">Completed</span></td></tr>
+            <tr><td>TS20260404002</td><td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds Pro</div></div></td><td>1</td><td class="price">$29.99 <span class="tsp-profit-badge tsp-profit-positive">+$22.86</span></td><td><span class="status-badge status-shipping">Shipping</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tsp-modal-overlay">
+      <div class="tsp-modal">
+        <div class="tsp-modal-header">
+          <span class="tsp-modal-title">Fee Breakdown</span>
+          <span style="font-size:20px;color:#999;">x</span>
+        </div>
+        <div class="tsp-modal-body">
+          <div class="tsp-fee-row"><span>Order Total</span><span class="tsp-fee-value">$49.98</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>Referral Fee (6.0%)</span><span class="tsp-fee-value">-$3.00</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>Payment Processing (1.0%)</span><span class="tsp-fee-value">-$0.51</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>COGS</span><span class="tsp-fee-value">-$5.00</span></div>
+          <div class="tsp-fee-row tsp-fee-total"><span><strong>Net Profit</strong></span><span class="tsp-fee-value" style="color:#059669;"><strong>$41.47</strong> (83.0%)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="callout arrow-left" style="top:350px;right:60px;">Detailed fee breakdown</div>
+</div>
+
+<h2>Screenshot 4: Product List with Margins (1280x800)</h2>
+<p class="hint">Shows profit margin next to each product price</p>
+
+<div class="screenshot" id="ss4">
+  <div class="mock-topbar">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+    <div class="nav-items"><span>Help</span><span>Account</span></div>
+  </div>
+  <div class="mock-layout">
+    <div class="mock-sidebar">
+      <div class="section-title">Order</div>
+      <a>Manage Orders</a>
+      <div class="section-title">Product</div>
+      <a class="active">Manage Products</a>
+      <div class="section-title">Analytics</div>
+      <a>Dashboard</a>
+    </div>
+    <div class="mock-main">
+      <h2 class="page-title">Manage Products</h2>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Sales (30d)</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">iPhone 15 Clear Case - Shockproof</div><div class="product-sku">SKU: CASE-001</div></div></td><td class="price">$24.99 <span class="tsp-profit-badge tsp-profit-positive">+$18.23</span></td><td>156</td><td>89</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            <tr><td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds Pro TWS Bluetooth 5.3</div><div class="product-sku">SKU: EAR-001</div></div></td><td class="price">$29.99 <span class="tsp-profit-badge tsp-profit-positive">+$22.86</span></td><td>78</td><td>124</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            <tr><td class="product-cell"><div class="product-img">👕</div><div><div class="product-name">Cotton Tee Oversized Black Unisex</div><div class="product-sku">SKU: TEE-001</div></div></td><td class="price">$14.99 <span class="tsp-profit-badge tsp-profit-positive">+$8.93</span></td><td>320</td><td>256</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            <tr><td class="product-cell"><div class="product-img">🔌</div><div><div class="product-name">USB-C Fast Charger 65W GaN Compact</div><div class="product-sku">SKU: CHG-001</div></div></td><td class="price">$35.99 <span class="tsp-profit-badge tsp-profit-positive">+$28.46</span></td><td>92</td><td>43</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            <tr><td class="product-cell"><div class="product-img">🧴</div><div><div class="product-name">Vitamin C Serum 30ml Anti-Aging</div><div class="product-sku">SKU: SKIN-001</div></div></td><td class="price">$12.99 <span class="tsp-profit-badge tsp-profit-positive">+$7.07</span></td><td>245</td><td>178</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            <tr><td class="product-cell"><div class="product-img">💄</div><div><div class="product-name">Lipstick Set 6 Colors Matte Finish</div><div class="product-sku">SKU: LIP-001</div></div></td><td class="price">$18.99 <span class="tsp-profit-badge tsp-profit-positive">+$12.65</span></td><td>134</td><td>67</td><td><span class="status-badge status-completed">Live</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="callout arrow-left" style="top:260px;right:420px;">Profit per product at a glance</div>
+</div>
+
+<hr style="margin:40px 0;border-color:#333;">
+<h2>How to capture screenshots:</h2>
+<ol style="padding:20px 40px;color:#aaa;line-height:2;">
+  <li>Open Chrome DevTools (F12)</li>
+  <li>Press Ctrl+Shift+P, type "screenshot"</li>
+  <li>Choose "Capture node screenshot"</li>
+  <li>Select the .screenshot div in Elements panel</li>
+  <li>Or: right-click each screenshot frame > Inspect > right-click element > "Capture node screenshot"</li>
+</ol>
+
+</body>
+</html>

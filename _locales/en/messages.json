@@ -1,0 +1,68 @@
+{
+  "appName": {
+    "message": "TikTok Seller Pro - Profit Calculator & Analytics"
+  },
+  "appDescription": {
+    "message": "See real profit per order directly in your TikTok Seller Center. Auto-calculates fees, COGS, and net profit."
+  },
+  "profit": {
+    "message": "Profit"
+  },
+  "loss": {
+    "message": "Loss"
+  },
+  "revenue": {
+    "message": "Revenue"
+  },
+  "totalProfit": {
+    "message": "Total Profit"
+  },
+  "profitMargin": {
+    "message": "Profit Margin"
+  },
+  "referralFee": {
+    "message": "Referral Fee"
+  },
+  "paymentFee": {
+    "message": "Payment Processing Fee"
+  },
+  "shippingCost": {
+    "message": "Shipping Cost"
+  },
+  "cogs": {
+    "message": "Cost of Goods (COGS)"
+  },
+  "netProfit": {
+    "message": "Net Profit"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "today": {
+    "message": "Today"
+  },
+  "thisWeek": {
+    "message": "This Week"
+  },
+  "thisMonth": {
+    "message": "This Month"
+  },
+  "setCogs": {
+    "message": "Set COGS"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "feeBreakdown": {
+    "message": "Fee Breakdown"
+  },
+  "free": {
+    "message": "Free"
+  },
+  "pro": {
+    "message": "Pro"
+  },
+  "upgradeToPro": {
+    "message": "Upgrade to Pro"
+  }
+}

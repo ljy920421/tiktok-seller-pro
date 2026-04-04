@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Seller Pro - Test</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; color: #1a1a2e; }
+
+    /* Test Banner */
+    .test-banner { background: #059669; color: #fff; padding: 8px 24px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+    .test-banner button { background: #fff; color: #059669; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+    /* Mock Nav */
+    .mock-nav { background: #fe2c55; color: #fff; padding: 8px 24px; font-size: 12px; display: flex; gap: 16px; align-items: center; }
+    .mock-nav a { color: #fff; text-decoration: underline; cursor: pointer; }
+    .mock-nav .label { font-weight: 600; }
+
+    /* Top Nav */
+    .top-nav { background: #fff; height: 56px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e8e8e8; }
+    .top-nav .logo { font-size: 18px; font-weight: 700; color: #161823; }
+    .top-nav .logo span { color: #fe2c55; }
+
+    /* Layout */
+    .layout { display: flex; min-height: calc(100vh - 120px); }
+    .sidebar { width: 220px; background: #fff; border-right: 1px solid #e8e8e8; padding: 16px 0; }
+    .sidebar a { display: block; padding: 10px 24px; color: #666; text-decoration: none; font-size: 14px; }
+    .sidebar a:hover { background: #f5f6fa; }
+    .sidebar a.active { color: #161823; font-weight: 600; background: #f0f1f5; }
+    .sidebar .section-title { padding: 8px 24px; font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; margin-top: 12px; }
+
+    .main-content { flex: 1; padding: 24px; }
+    .page-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+
+    /* Dashboard */
+    .dashboard-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid #e8e8e8; }
+    .metric-card .label { font-size: 13px; color: #888; margin-bottom: 8px; }
+    .metric-card .value { font-size: 28px; font-weight: 700; }
+    .metric-card .change { font-size: 12px; color: #059669; margin-top: 4px; }
+
+    /* Table */
+    .order-table-container { background: #fff; border-radius: 8px; border: 1px solid #e8e8e8; overflow: hidden; }
+    .table-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e8e8e8; }
+    .table-header h3 { font-size: 16px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: #888; background: #fafafa; border-bottom: 1px solid #e8e8e8; }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+    tr:hover { background: #fafbfc; }
+
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+    .status-completed { background: #ecfdf5; color: #059669; }
+    .status-shipping { background: #eff6ff; color: #2563eb; }
+    .status-pending { background: #fefce8; color: #ca8a04; }
+    .status-cancelled { background: #fef2f2; color: #dc2626; }
+
+    .product-cell { display: flex; align-items: center; gap: 10px; }
+    .product-img { width: 40px; height: 40px; border-radius: 6px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .product-name { font-size: 13px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .product-sku { font-size: 11px; color: #999; }
+    .order-amount, .price { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .page-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid #e8e8e8; }
+    .page-tabs button { padding: 10px 20px; border: none; background: none; font-size: 14px; color: #888; cursor: pointer; border-bottom: 2px solid transparent; }
+    .page-tabs button.active { color: #161823; font-weight: 600; border-bottom-color: #161823; }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* ===== Extension Injected Styles (copied from content/styles.css) ===== */
+    .tsp-profit-badge { display: inline-flex; align-items: center; padding: 2px 8px; margin-left: 8px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; vertical-align: middle; }
+    .tsp-profit-badge:hover { opacity: 0.8; }
+    .tsp-profit-positive { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .tsp-profit-negative { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+    .tsp-dashboard-bar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 16px 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .tsp-dashboard-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; opacity: 0.9; }
+    .tsp-dashboard-metrics { display: flex; gap: 32px; }
+    .tsp-metric { flex: 1; }
+    .tsp-metric-label { font-size: 12px; opacity: 0.7; margin-bottom: 4px; }
+    .tsp-metric-value { font-size: 24px; font-weight: 700; }
+    .tsp-metric-value.tsp-profit-positive { background: none; border: none; color: #34d399; padding: 0; }
+    .tsp-metric-value.tsp-profit-negative { background: none; border: none; color: #f87171; padding: 0; }
+    .tsp-metric-sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+
+    .tsp-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999999; }
+    .tsp-modal { background: #fff; border-radius: 12px; width: 380px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+    .tsp-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+    .tsp-modal-title { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+    .tsp-modal-close { font-size: 20px; cursor: pointer; color: #999; padding: 0 4px; }
+    .tsp-modal-close:hover { color: #333; }
+    .tsp-modal-body { padding: 16px 20px; }
+    .tsp-fee-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; color: #333; }
+    .tsp-fee-row.tsp-fee-deduct { color: #888; }
+    .tsp-fee-row.tsp-fee-deduct .tsp-fee-value { color: #dc2626; }
+    .tsp-fee-row.tsp-fee-total { border-top: 2px solid #e5e5e5; margin-top: 8px; padding-top: 12px; }
+    .tsp-fee-row.tsp-fee-total.tsp-profit-positive { background:none; border-left:none; border-right:none; border-bottom:none; }
+    .tsp-fee-row.tsp-fee-total.tsp-profit-positive .tsp-fee-value { color: #059669; }
+    .tsp-fee-row.tsp-fee-total.tsp-profit-negative { background:none; border-left:none; border-right:none; border-bottom:none; }
+    .tsp-fee-row.tsp-fee-total.tsp-profit-negative .tsp-fee-value { color: #dc2626; }
+    .tsp-fee-value { font-weight: 500; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+  <div class="test-banner">
+    <span>Extension Test Mode — all code loaded inline, no Chrome extension needed</span>
+    <div style="display:flex;gap:8px;">
+      <select id="lang-switcher" onchange="switchLanguage(this.value)" style="padding:6px 10px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">
+        <option value="en">🌐 English</option>
+        <option value="zh_CN">🌐 中文</option>
+      </select>
+      <button onclick="location.reload()">Reload</button>
+    </div>
+  </div>
+
+  <div class="mock-nav">
+    <span class="label">MOCK PAGES:</span>
+    <a onclick="showPage('homepage')">Dashboard</a>
+    <a onclick="showPage('order')">Orders</a>
+    <a onclick="showPage('product')">Products</a>
+  </div>
+
+  <div class="top-nav">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="section-title">Order</div>
+      <a href="#" onclick="showPage('order')">Manage Orders</a>
+      <div class="section-title">Product</div>
+      <a href="#" onclick="showPage('product')">Manage Products</a>
+      <div class="section-title">Analytics</div>
+      <a href="#" onclick="showPage('homepage')">Dashboard</a>
+    </div>
+
+    <main class="main-content">
+
+      <!-- DASHBOARD -->
+      <div id="page-homepage" class="page-section active">
+        <h2 class="page-title">Dashboard</h2>
+        <div class="dashboard-metrics">
+          <div class="metric-card"><div class="label">Revenue (Today)</div><div class="value">$1,284.50</div><div class="change">+12.3%</div></div>
+          <div class="metric-card"><div class="label">Orders (Today)</div><div class="value">23</div><div class="change">+5</div></div>
+          <div class="metric-card"><div class="label">Visitors</div><div class="value">1,892</div><div class="change">-3.2%</div></div>
+          <div class="metric-card"><div class="label">Conversion</div><div class="value">1.22%</div><div class="change">+0.1%</div></div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="page-order" class="page-section">
+        <h2 class="page-title">Manage Orders</h2>
+        <div class="page-tabs"><button class="active">All Orders</button><button>To Ship</button><button>Completed</button><button>Cancelled</button></div>
+        <div class="order-table-container">
+          <table>
+            <thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Order Amount</th><th>Status</th><th>Created</th></tr></thead>
+            <tbody>
+              <tr class="order-item"><td class="order-id">TS001</td><td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">iPhone Case Clear</div><div class="product-sku">SKU: CASE-001</div></div></td><td>2</td><td class="order-amount price total">$49.98</td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-04</td></tr>
+              <tr class="order-item"><td class="order-id">TS002</td><td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds TWS</div><div class="product-sku">SKU: EAR-001</div></div></td><td>1</td><td class="order-amount price total">$29.99</td><td><span class="status-badge status-shipping">Shipping</span></td><td>2026-04-04</td></tr>
+              <tr class="order-item"><td class="order-id">TS003</td><td class="product-cell"><div class="product-img">👕</div><div><div class="product-name">Cotton Tee Black</div><div class="product-sku">SKU: TEE-001</div></div></td><td>3</td><td class="order-amount price total">$44.97</td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-04</td></tr>
+              <tr class="order-item"><td class="order-id">TS004</td><td class="product-cell"><div class="product-img">💄</div><div><div class="product-name">Lipstick Set 6 Colors</div><div class="product-sku">SKU: LIP-001</div></div></td><td>1</td><td class="order-amount price total">$18.99</td><td><span class="status-badge status-pending">Pending</span></td><td>2026-04-04</td></tr>
+              <tr class="order-item"><td class="order-id">TS005</td><td class="product-cell"><div class="product-img">🔌</div><div><div class="product-name">USB-C Charger 65W</div><div class="product-sku">SKU: CHG-001</div></div></td><td>1</td><td class="order-amount price total">$35.99</td><td><span class="status-badge status-completed">Completed</span></td><td>2026-04-04</td></tr>
+              <tr class="order-item"><td class="order-id">TS006</td><td class="product-cell"><div class="product-img">🧴</div><div><div class="product-name">Vitamin C Serum</div><div class="product-sku">SKU: SKIN-001</div></div></td><td>2</td><td class="order-amount price total">$25.98</td><td><span class="status-badge status-shipping">Shipping</span></td><td>2026-04-04</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div id="page-product" class="page-section">
+        <h2 class="page-title">Manage Products</h2>
+        <div class="order-table-container">
+          <table>
+            <thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Sales (30d)</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr class="product-item"><td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">iPhone Case Clear</div><div class="product-sku">SKU: CASE-001</div></div></td><td class="price amount">$24.99</td><td>156</td><td>89</td><td><span class="status-badge status-completed">Live</span></td></tr>
+              <tr class="product-item"><td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds TWS</div><div class="product-sku">SKU: EAR-001</div></div></td><td class="price amount">$29.99</td><td>78</td><td>124</td><td><span class="status-badge status-completed">Live</span></td></tr>
+              <tr class="product-item"><td class="product-cell"><div class="product-img">👕</div><div><div class="product-name">Cotton Tee Black</div><div class="product-sku">SKU: TEE-001</div></div></td><td class="price amount">$14.99</td><td>320</td><td>256</td><td><span class="status-badge status-completed">Live</span></td></tr>
+              <tr class="product-item"><td class="product-cell"><div class="product-img">🔌</div><div><div class="product-name">USB-C Charger 65W</div><div class="product-sku">SKU: CHG-001</div></div></td><td class="price amount">$35.99</td><td>92</td><td>43</td><td><span class="status-badge status-completed">Live</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<script>
+// ===== i18n System =====
+const I18N = {
+  en: {
+    // Extension UI
+    profitSummaryTitle: 'TikTok Seller Pro - Profit Summary',
+    today: 'Today', thisWeek: 'This Week', thisMonth: 'This Month',
+    orders: 'orders', margin: 'margin',
+    feeBreakdown: 'Fee Breakdown',
+    orderTotal: 'Order Total',
+    referralFee: 'Referral Fee',
+    paymentProcessing: 'Payment Processing',
+    cogs: 'COGS',
+    netProfit: 'Net Profit',
+    revenue: 'Revenue', fees: 'Fees', profit: 'Profit',
+    // Mock page UI
+    dashboard: 'Dashboard', manageOrders: 'Manage Orders', manageProducts: 'Manage Products',
+    analytics: 'Analytics', order: 'Order', product: 'Product',
+    revenueToday: 'Revenue (Today)', ordersToday: 'Orders (Today)',
+    visitors: 'Visitors', conversion: 'Conversion',
+    allOrders: 'All Orders', toShip: 'To Ship', completed: 'Completed', cancelled: 'Cancelled',
+    orderId: 'Order ID', productCol: 'Product', qty: 'Qty', orderAmount: 'Order Amount',
+    status: 'Status', created: 'Created',
+    price: 'Price', stock: 'Stock', sales30d: 'Sales (30d)',
+    statusCompleted: 'Completed', statusShipping: 'Shipping', statusPending: 'Pending',
+    statusCancelled: 'Cancelled', statusLive: 'Live',
+    mockPages: 'MOCK PAGES:',
+    testBanner: 'Extension Test Mode — all code loaded inline, no Chrome extension needed'
+  },
+  zh_CN: {
+    profitSummaryTitle: 'TikTok卖家助手 - 利润汇总',
+    today: '今天', thisWeek: '本周', thisMonth: '本月',
+    orders: '单', margin: '利润率',
+    feeBreakdown: '费用明细',
+    orderTotal: '订单金额',
+    referralFee: '推荐费',
+    paymentProcessing: '支付处理费',
+    cogs: '商品成本',
+    netProfit: '净利润',
+    revenue: '收入', fees: '费用', profit: '利润',
+    dashboard: '仪表盘', manageOrders: '订单管理', manageProducts: '产品管理',
+    analytics: '数据分析', order: '订单', product: '产品',
+    revenueToday: '今日收入', ordersToday: '今日订单',
+    visitors: '访客数', conversion: '转化率',
+    allOrders: '全部订单', toShip: '待发货', completed: '已完成', cancelled: '已取消',
+    orderId: '订单号', productCol: '商品', qty: '数量', orderAmount: '订单金额',
+    status: '状态', created: '创建时间',
+    price: '价格', stock: '库存', sales30d: '30天销量',
+    statusCompleted: '已完成', statusShipping: '运输中', statusPending: '待处理',
+    statusCancelled: '已取消', statusLive: '在售',
+    mockPages: '测试页面:',
+    testBanner: '插件测试模式 — 所有代码内联加载，无需安装Chrome扩展'
+  }
+};
+
+let currentLang = 'en';
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+}
+
+function switchLanguage(lang) {
+  currentLang = lang;
+  // Remove existing extension elements so they re-render
+  document.querySelectorAll('.tsp-profit-badge, .tsp-dashboard-bar, .tsp-modal-overlay').forEach(el => el.remove());
+  window.__tiktokSellerProLoaded = false;
+  updatePageText();
+  // Re-run extension injection
+  runExtension();
+}
+
+function updatePageText() {
+  // Test banner
+  document.querySelector('.test-banner span').textContent = t('testBanner');
+  document.querySelector('.mock-nav .label').textContent = t('mockPages');
+  document.querySelectorAll('.mock-nav a')[0].textContent = t('dashboard');
+  document.querySelectorAll('.mock-nav a')[1].textContent = t('manageOrders');
+  document.querySelectorAll('.mock-nav a')[2].textContent = t('manageProducts');
+
+  // Sidebar
+  const sectionTitles = document.querySelectorAll('.sidebar .section-title');
+  sectionTitles[0].textContent = t('order');
+  sectionTitles[1].textContent = t('product');
+  sectionTitles[2].textContent = t('analytics');
+  const sidebarLinks = document.querySelectorAll('.sidebar a');
+  sidebarLinks[0].textContent = t('manageOrders');
+  sidebarLinks[1].textContent = t('manageProducts');
+  sidebarLinks[2].textContent = t('dashboard');
+
+  // Dashboard
+  document.querySelector('#page-homepage .page-title').textContent = t('dashboard');
+  const metricLabels = document.querySelectorAll('.metric-card .label');
+  metricLabels[0].textContent = t('revenueToday');
+  metricLabels[1].textContent = t('ordersToday');
+  metricLabels[2].textContent = t('visitors');
+  metricLabels[3].textContent = t('conversion');
+
+  // Orders page
+  document.querySelector('#page-order .page-title').textContent = t('manageOrders');
+  const tabs = document.querySelectorAll('.page-tabs button');
+  tabs[0].textContent = t('allOrders');
+  tabs[1].textContent = t('toShip');
+  tabs[2].textContent = t('completed');
+  tabs[3].textContent = t('cancelled');
+  const orderTh = document.querySelectorAll('#page-order th');
+  orderTh[0].textContent = t('orderId');
+  orderTh[1].textContent = t('productCol');
+  orderTh[2].textContent = t('qty');
+  orderTh[3].textContent = t('orderAmount');
+  orderTh[4].textContent = t('status');
+  orderTh[5].textContent = t('created');
+
+  // Products page
+  document.querySelector('#page-product .page-title').textContent = t('manageProducts');
+  const prodTh = document.querySelectorAll('#page-product th');
+  prodTh[0].textContent = t('productCol');
+  prodTh[1].textContent = t('price');
+  prodTh[2].textContent = t('stock');
+  prodTh[3].textContent = t('sales30d');
+  prodTh[4].textContent = t('status');
+
+  // Status badges
+  document.querySelectorAll('.status-completed').forEach(el => {
+    if (el.closest('.product-item')) el.textContent = t('statusLive');
+    else el.textContent = t('statusCompleted');
+  });
+  document.querySelectorAll('.status-shipping').forEach(el => el.textContent = t('statusShipping'));
+  document.querySelectorAll('.status-pending').forEach(el => el.textContent = t('statusPending'));
+  document.querySelectorAll('.status-cancelled').forEach(el => el.textContent = t('statusCancelled'));
+}
+
+// ===== Mock Navigation =====
+function showPage(page) {
+  document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+}
+
+// ===== Mock Chrome API =====
+window.chrome = {
+  runtime: {
+    sendMessage: function(msg) {
+      return new Promise(resolve => {
+        switch(msg.type) {
+          case 'GET_SETTINGS':
+            resolve({ region: 'US', isNewSeller: false, defaultCogs: 5, cogsMap: {}, showProfitOverlay: true, showDashboardSummary: true });
+            break;
+          case 'GET_PROFIT_SUMMARY':
+            if (msg.period === 'today') resolve({ totalRevenue: 205.90, totalProfit: 137.22, totalFees: 23.68, orderCount: 6, profitMargin: '66.6' });
+            else if (msg.period === 'week') resolve({ totalRevenue: 1284.50, totalProfit: 856.33, totalFees: 148.17, orderCount: 38, profitMargin: '66.7' });
+            else resolve({ totalRevenue: 4850.00, totalProfit: 3233.50, totalFees: 559.36, orderCount: 142, profitMargin: '66.7' });
+            break;
+          default:
+            resolve({});
+        }
+      });
+    }
+  }
+};
+
+// ===== Inline inject.js (simplified for test) =====
+async function runExtension() {
+  'use strict';
+
+  if (window.__tiktokSellerProLoaded) return;
+  window.__tiktokSellerProLoaded = true;
+
+  console.log('[TikTok Seller Pro] Test mode loaded (' + currentLang + ')');
+
+  let settings = await chrome.runtime.sendMessage({ type: 'GET_SETTINGS' });
+
+  const FEE_RATES = {
+    US: { referralRate: 0.06, referralRateNew: 0.03, paymentFeeRate: 0.0102 },
+    UK: { referralRate: 0.09, referralRateNew: 0.045, paymentFeeRate: 0.012 },
+    EU: { referralRate: 0.09, referralRateNew: 0.045, paymentFeeRate: 0.012 }
+  };
+
+  function calcProfit(orderTotal, cogs, region, isNew) {
+    const rates = FEE_RATES[region || 'US'] || FEE_RATES.US;
+    const refRate = isNew ? rates.referralRateNew : rates.referralRate;
+    const referralFee = +(orderTotal * refRate).toFixed(2);
+    const paymentFee = +(orderTotal * rates.paymentFeeRate).toFixed(2);
+    const totalFees = +(referralFee + paymentFee).toFixed(2);
+    const netProfit = +(orderTotal - totalFees - cogs).toFixed(2);
+    const margin = orderTotal > 0 ? +((netProfit / orderTotal) * 100).toFixed(1) : 0;
+    return { orderTotal, referralFee, paymentFee, totalFees, cogs, netProfit, margin, isProfitable: netProfit > 0 };
+  }
+
+  function parsePrice(str) {
+    if (!str) return 0;
+    return parseFloat(str.replace(/[^0-9.,-]/g, '').replace(',', '')) || 0;
+  }
+
+  function formatMoney(amount) {
+    const sign = amount < 0 ? '-' : '';
+    return sign + '$' + Math.abs(amount).toFixed(2);
+  }
+
+  function createProfitBadge(data) {
+    const badge = document.createElement('span');
+    badge.className = 'tsp-profit-badge ' + (data.isProfitable ? 'tsp-profit-positive' : 'tsp-profit-negative');
+    badge.textContent = formatMoney(data.netProfit);
+    badge.title = `${t('revenue')}: ${formatMoney(data.orderTotal)}\n${t('fees')}: -${formatMoney(data.totalFees)}\n${t('cogs')}: -${formatMoney(data.cogs)}\n${t('profit')}: ${formatMoney(data.netProfit)} (${data.margin}%)`;
+    badge.style.cursor = 'pointer';
+    badge.addEventListener('click', function(e) {
+      e.stopPropagation();
+      showModal(data);
+    });
+    return badge;
+  }
+
+  function showModal(data) {
+    let overlay = document.querySelector('.tsp-modal-overlay');
+    if (overlay) overlay.remove();
+    overlay = document.createElement('div');
+    overlay.className = 'tsp-modal-overlay';
+    overlay.innerHTML = `
+      <div class="tsp-modal">
+        <div class="tsp-modal-header">
+          <span class="tsp-modal-title">${t('feeBreakdown')}</span>
+          <span class="tsp-modal-close">&times;</span>
+        </div>
+        <div class="tsp-modal-body">
+          <div class="tsp-fee-row"><span>${t('orderTotal')}</span><span class="tsp-fee-value">${formatMoney(data.orderTotal)}</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>${t('referralFee')} (${((data.referralFee/data.orderTotal)*100).toFixed(1)}%)</span><span class="tsp-fee-value">-${formatMoney(data.referralFee)}</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>${t('paymentProcessing')}</span><span class="tsp-fee-value">-${formatMoney(data.paymentFee)}</span></div>
+          <div class="tsp-fee-row tsp-fee-deduct"><span>${t('cogs')}</span><span class="tsp-fee-value">-${formatMoney(data.cogs)}</span></div>
+          <div class="tsp-fee-row tsp-fee-total ${data.isProfitable ? 'tsp-profit-positive' : 'tsp-profit-negative'}">
+            <span><strong>${t('netProfit')}</strong></span>
+            <span class="tsp-fee-value"><strong>${formatMoney(data.netProfit)}</strong> (${data.margin}%)</span>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+    overlay.querySelector('.tsp-modal-close').addEventListener('click', function() { overlay.remove(); });
+  }
+
+  // Process order rows
+  function processOrders() {
+    document.querySelectorAll('.order-item').forEach(function(row) {
+      if (row.querySelector('.tsp-profit-badge')) return;
+      const priceEl = row.querySelector('.order-amount, .price');
+      if (!priceEl) return;
+      const total = parsePrice(priceEl.textContent);
+      if (total <= 0) return;
+      const profit = calcProfit(total, settings.defaultCogs || 5, settings.region, settings.isNewSeller);
+      priceEl.parentElement.appendChild(createProfitBadge(profit));
+    });
+  }
+
+  // Process product rows
+  function processProducts() {
+    document.querySelectorAll('.product-item').forEach(function(row) {
+      if (row.querySelector('.tsp-profit-badge')) return;
+      const priceEl = row.querySelector('.price');
+      if (!priceEl) return;
+      const price = parsePrice(priceEl.textContent);
+      if (price <= 0) return;
+      const profit = calcProfit(price, settings.defaultCogs || 5, settings.region, settings.isNewSeller);
+      priceEl.parentElement.appendChild(createProfitBadge(profit));
+    });
+  }
+
+  // Add dashboard summary
+  async function processDashboard() {
+    if (document.querySelector('.tsp-dashboard-bar')) return;
+    const todayData = await chrome.runtime.sendMessage({ type: 'GET_PROFIT_SUMMARY', period: 'today' });
+    const week = await chrome.runtime.sendMessage({ type: 'GET_PROFIT_SUMMARY', period: 'week' });
+    const month = await chrome.runtime.sendMessage({ type: 'GET_PROFIT_SUMMARY', period: 'month' });
+    const bar = document.createElement('div');
+    bar.className = 'tsp-dashboard-bar';
+    bar.innerHTML = `
+      <div class="tsp-dashboard-title">${t('profitSummaryTitle')}</div>
+      <div class="tsp-dashboard-metrics">
+        <div class="tsp-metric"><div class="tsp-metric-label">${t('today')}</div><div class="tsp-metric-value tsp-profit-positive">${formatMoney(todayData.totalProfit)}</div><div class="tsp-metric-sub">${todayData.orderCount} ${t('orders')} | ${todayData.profitMargin}% ${t('margin')}</div></div>
+        <div class="tsp-metric"><div class="tsp-metric-label">${t('thisWeek')}</div><div class="tsp-metric-value tsp-profit-positive">${formatMoney(week.totalProfit)}</div><div class="tsp-metric-sub">${week.orderCount} ${t('orders')} | ${week.profitMargin}% ${t('margin')}</div></div>
+        <div class="tsp-metric"><div class="tsp-metric-label">${t('thisMonth')}</div><div class="tsp-metric-value tsp-profit-positive">${formatMoney(month.totalProfit)}</div><div class="tsp-metric-sub">${month.orderCount} ${t('orders')} | ${month.profitMargin}% ${t('margin')}</div></div>
+      </div>`;
+    const dashboard = document.getElementById('page-homepage');
+    dashboard.insertBefore(bar, dashboard.querySelector('.dashboard-metrics'));
+  }
+
+  // Initial processing
+  processOrders();
+  processProducts();
+  processDashboard();
+
+  // Re-process when switching pages
+  const origShowPage = window.showPage;
+  window.showPage = function(page) {
+    origShowPage(page);
+    setTimeout(function() {
+      processOrders();
+      processProducts();
+      if (page === 'homepage') processDashboard();
+    }, 100);
+  };
+
+  console.log('[TikTok Seller Pro] All modules processed');
+}
+
+// Initial run
+runExtension();
+
+// ===== Automated Test Suite =====
+setTimeout(function() {
+  const results = [];
+  function assert(name, condition) {
+    results.push({ name, pass: !!condition });
+  }
+
+  // Test 1: Dashboard profit summary bar loaded
+  assert('Dashboard: Profit summary bar exists', document.querySelector('.tsp-dashboard-bar'));
+
+  // Test 2: Dashboard shows correct values
+  const dashValues = document.querySelectorAll('.tsp-metric-value');
+  assert('Dashboard: Shows 3 metric values', dashValues.length >= 3);
+  assert('Dashboard: Today profit = $137.22', dashValues[0]?.textContent.includes('137.22'));
+
+  // Test 3: Switch to Orders and check badges
+  showPage('order');
+  setTimeout(function() {
+    const orderBadges = document.querySelectorAll('#page-order .tsp-profit-badge');
+    assert('Orders: Profit badges injected', orderBadges.length >= 1);
+    assert('Orders: Badge count matches order rows (6)', orderBadges.length === 6);
+
+    // Test 4: Verify profit calculation for first order ($49.98)
+    // Referral: 49.98 * 0.06 = 3.00, Payment: 49.98 * 0.0102 = 0.51, COGS: 5
+    // Net = 49.98 - 3.00 - 0.51 - 5 = 41.47
+    const firstBadge = orderBadges[0];
+    assert('Orders: First order profit = $41.47', firstBadge?.textContent.includes('41.47'));
+
+    // Test 5: Badge is green (profitable)
+    assert('Orders: Badge is green (positive)', firstBadge?.classList.contains('tsp-profit-positive'));
+
+    // Test 6: Click badge to open modal
+    if (firstBadge) firstBadge.click();
+    setTimeout(function() {
+      const modal = document.querySelector('.tsp-modal-overlay');
+      assert('Modal: Fee breakdown opens on click', !!modal);
+      assert('Modal: Shows order total', modal?.textContent.includes('49.98'));
+      assert('Modal: Shows referral fee', modal?.textContent.includes('3.00'));
+      assert('Modal: Shows net profit', modal?.textContent.includes('41.47'));
+
+      // Close modal
+      if (modal) modal.querySelector('.tsp-modal-close')?.click();
+      assert('Modal: Closes on X click', !document.querySelector('.tsp-modal-overlay'));
+
+      // Test 7: Switch to Products
+      showPage('product');
+      setTimeout(function() {
+        const productBadges = document.querySelectorAll('#page-product .tsp-profit-badge');
+        assert('Products: Profit badges injected', productBadges.length >= 1);
+        assert('Products: Badge count matches product rows (4)', productBadges.length === 4);
+
+        // Test 8: Language switch
+        switchLanguage('zh_CN');
+        setTimeout(function() {
+          assert('i18n: Dashboard title in Chinese', document.querySelector('#page-homepage .page-title')?.textContent === '仪表盘');
+          assert('i18n: Sidebar shows Chinese text', document.querySelector('.sidebar .section-title')?.textContent === '订单');
+          const zhBar = document.querySelector('.tsp-dashboard-bar .tsp-dashboard-title');
+          assert('i18n: Profit bar title in Chinese', zhBar?.textContent.includes('卖家助手'));
+
+          // Switch back
+          switchLanguage('en');
+          setTimeout(function() {
+            assert('i18n: Switch back to English works', document.querySelector('#page-homepage .page-title')?.textContent === 'Dashboard');
+
+            // Render test results
+            renderTestResults(results);
+          }, 200);
+        }, 200);
+      }, 200);
+    }, 100);
+  }, 200);
+}, 500);
+
+function renderTestResults(results) {
+  const passed = results.filter(r => r.pass).length;
+  const failed = results.filter(r => !r.pass).length;
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;color:#fff;padding:16px 24px;font-size:13px;max-height:40vh;overflow-y:auto;z-index:999998;font-family:monospace;';
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong>Test Results: ${passed}/${results.length} passed</strong>
+      <span style="color:${failed > 0 ? '#f87171' : '#34d399'}">${failed > 0 ? failed + ' FAILED' : 'ALL PASSED'}</span>
+    </div>
+    ${results.map(r => `<div style="padding:2px 0;color:${r.pass ? '#34d399' : '#f87171'}">${r.pass ? '✓' : '✗'} ${r.name}</div>`).join('')}
+  `;
+  document.body.appendChild(panel);
+  showPage('homepage'); // Return to dashboard view
+  console.log(`[Test] ${passed}/${results.length} passed, ${failed} failed`);
+}
+</script>
+</body>
+</html>

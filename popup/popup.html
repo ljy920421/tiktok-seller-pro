@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      padding: 16px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .header .subtitle {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    .section {
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid #eee;
+    }
+
+    .metric-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .metric-value.positive { color: #059669; }
+    .metric-value.negative { color: #dc2626; }
+
+    .metric-sub {
+      font-size: 10px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .settings-label {
+      font-size: 13px;
+    }
+
+    .settings-value {
+      font-size: 13px;
+      color: #666;
+    }
+
+    select, input[type="number"] {
+      padding: 4px 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ccc;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 2px;
+      bottom: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background: #059669;
+    }
+
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(18px);
+    }
+
+    .footer {
+      padding: 12px 16px;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-settings {
+      background: #f0f0f0;
+      color: #333;
+      width: 100%;
+    }
+
+    .btn-settings:hover {
+      background: #e5e5e5;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 12px;
+      background: #f0fdf4;
+      color: #059669;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #059669;
+    }
+
+    .status.inactive {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .status.inactive .status-dot {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>TikTok Seller Pro</h1>
+    <div class="subtitle">Profit Calculator & Analytics</div>
+  </div>
+
+  <div id="status" class="status">
+    <div class="status-dot"></div>
+    <span id="statusText">Active on TikTok Seller Center</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Profit Summary</div>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">Today</div>
+        <div class="metric-value" id="todayProfit">$0.00</div>
+        <div class="metric-sub" id="todayOrders">0 orders</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">This Week</div>
+        <div class="metric-value" id="weekProfit">$0.00</div>
+        <div class="metric-sub" id="weekOrders">0 orders</div>
+      </div>
+      <div class="metric-card full-width">
+        <div class="metric-label">This Month</div>
+        <div class="metric-value" id="monthProfit">$0.00</div>
+        <div class="metric-sub" id="monthOrders">0 orders · 0.0% margin</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Quick Settings</div>
+    <div class="settings-row">
+      <span class="settings-label">Region</span>
+      <select id="region">
+        <option value="US">US (6%)</option>
+        <option value="UK">UK (9%)</option>
+        <option value="EU">EU (9%)</option>
+      </select>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">New Seller (30 days)</span>
+      <label class="toggle">
+        <input type="checkbox" id="isNewSeller">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Default COGS ($)</span>
+      <input type="number" id="defaultCogs" min="0" step="0.01" style="width: 80px;" placeholder="0.00">
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn btn-settings" id="openSettings">Advanced Settings</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

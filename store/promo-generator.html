@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Promo Image Generator</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #111; padding: 40px; color: #fff; }
+    h2 { color: #34d399; margin-bottom: 10px; }
+    p.hint { color: #888; font-size: 13px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>Small Promo Tile (440x280)</h2>
+<p class="hint">Right-click canvas > "Save image as" to save as PNG</p>
+<canvas id="promo-small" width="440" height="280"></canvas>
+
+<h2 style="margin-top:40px;">Large Promo Tile (920x680)</h2>
+<canvas id="promo-large" width="920" height="680"></canvas>
+
+<script>
+function drawPromo(canvasId, w, h) {
+  const c = document.getElementById(canvasId);
+  const ctx = c.getContext('2d');
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0, '#1a1a2e');
+  grad.addColorStop(1, '#16213e');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Decorative circles
+  ctx.globalAlpha = 0.05;
+  ctx.fillStyle = '#34d399';
+  ctx.beginPath(); ctx.arc(w * 0.85, h * 0.2, w * 0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(w * 0.1, h * 0.8, w * 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = 1;
+
+  const isSmall = w <= 440;
+  const scale = isSmall ? 1 : 2;
+
+  // Icon
+  const iconSize = 48 * scale;
+  const iconX = w * 0.5 - iconSize / 2;
+  const iconY = isSmall ? 30 : 60;
+  ctx.fillStyle = '#0d9488';
+  ctx.beginPath();
+  ctx.roundRect(iconX, iconY, iconSize, iconSize, 12 * scale);
+  ctx.fill();
+  ctx.fillStyle = '#34d399';
+  ctx.font = `bold ${28 * scale}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('$', iconX + iconSize / 2, iconY + iconSize / 2);
+
+  // Title
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${isSmall ? 22 : 36}px -apple-system, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('TikTok Seller Pro', w / 2, iconY + iconSize + (isSmall ? 30 : 55));
+
+  // Subtitle
+  ctx.fillStyle = '#34d399';
+  ctx.font = `${isSmall ? 14 : 22}px -apple-system, sans-serif`;
+  ctx.fillText('Profit Calculator & Analytics', w / 2, iconY + iconSize + (isSmall ? 52 : 88));
+
+  // Feature bullets
+  ctx.fillStyle = '#a0aec0';
+  ctx.font = `${isSmall ? 12 : 18}px -apple-system, sans-serif`;
+  const features = [
+    'See real profit per order instantly',
+    'Auto-calculate TikTok fees & COGS',
+    'Dashboard profit summary',
+  ];
+  const bulletStartY = iconY + iconSize + (isSmall ? 78 : 130);
+  features.forEach((f, i) => {
+    ctx.fillStyle = '#34d399';
+    ctx.fillText('✓', w / 2 - (isSmall ? 120 : 190), bulletStartY + i * (isSmall ? 22 : 32));
+    ctx.fillStyle = '#cbd5e0';
+    ctx.textAlign = 'left';
+    ctx.fillText(f, w / 2 - (isSmall ? 108 : 175), bulletStartY + i * (isSmall ? 22 : 32));
+    ctx.textAlign = 'center';
+  });
+
+  // Bottom badge
+  ctx.fillStyle = 'rgba(52, 211, 153, 0.15)';
+  const badgeW = isSmall ? 120 : 180;
+  const badgeH = isSmall ? 28 : 40;
+  const badgeX = w / 2 - badgeW / 2;
+  const badgeY = h - (isSmall ? 40 : 70);
+  ctx.beginPath();
+  ctx.roundRect(badgeX, badgeY, badgeW, badgeH, badgeH / 2);
+  ctx.fill();
+  ctx.fillStyle = '#34d399';
+  ctx.font = `bold ${isSmall ? 13 : 18}px -apple-system, sans-serif`;
+  ctx.fillText('FREE', w / 2, badgeY + badgeH / 2);
+}
+
+drawPromo('promo-small', 440, 280);
+drawPromo('promo-large', 920, 680);
+</script>
+</body>
+</html>

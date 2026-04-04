@@ -1,0 +1,68 @@
+{
+  "appName": {
+    "message": "TikTok卖家助手 - 利润计算与分析"
+  },
+  "appDescription": {
+    "message": "在TikTok卖家中心直接查看每笔订单的真实利润，自动计算平台费用、成本和净利润。"
+  },
+  "profit": {
+    "message": "利润"
+  },
+  "loss": {
+    "message": "亏损"
+  },
+  "revenue": {
+    "message": "收入"
+  },
+  "totalProfit": {
+    "message": "总利润"
+  },
+  "profitMargin": {
+    "message": "利润率"
+  },
+  "referralFee": {
+    "message": "推荐费"
+  },
+  "paymentFee": {
+    "message": "支付处理费"
+  },
+  "shippingCost": {
+    "message": "运费"
+  },
+  "cogs": {
+    "message": "商品成本"
+  },
+  "netProfit": {
+    "message": "净利润"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "today": {
+    "message": "今天"
+  },
+  "thisWeek": {
+    "message": "本周"
+  },
+  "thisMonth": {
+    "message": "本月"
+  },
+  "setCogs": {
+    "message": "设置成本"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "feeBreakdown": {
+    "message": "费用明细"
+  },
+  "free": {
+    "message": "免费版"
+  },
+  "pro": {
+    "message": "专业版"
+  },
+  "upgradeToPro": {
+    "message": "升级到专业版"
+  }
+}

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Seller Center - Mock</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f6fa;
+      color: #1a1a2e;
+    }
+
+    /* Top Nav */
+    .top-nav {
+      background: #fff;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      border-bottom: 1px solid #e8e8e8;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-nav .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #161823;
+    }
+
+    .top-nav .logo span { color: #fe2c55; }
+
+    .top-nav .nav-links {
+      display: flex;
+      gap: 24px;
+      margin-left: 48px;
+    }
+
+    .top-nav .nav-links a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 16px 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    .top-nav .nav-links a.active {
+      color: #161823;
+      font-weight: 600;
+      border-bottom-color: #161823;
+    }
+
+    /* Sidebar */
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 56px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      border-right: 1px solid #e8e8e8;
+      padding: 16px 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 24px;
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .sidebar a:hover { background: #f5f6fa; }
+    .sidebar a.active { color: #161823; font-weight: 600; background: #f0f1f5; }
+
+    .sidebar .section-title {
+      padding: 8px 24px;
+      font-size: 12px;
+      color: #999;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 24px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #e8e8e8;
+    }
+
+    .metric-card .label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .metric-card .value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .metric-card .change {
+      font-size: 12px;
+      color: #059669;
+      margin-top: 4px;
+    }
+
+    .metric-card .change.down { color: #dc2626; }
+
+    /* Order Table */
+    .order-table-container {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e8e8e8;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .table-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .table-toolbar {
+      display: flex;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+
+    .table-toolbar select, .table-toolbar input {
+      padding: 6px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      background: #fafafa;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    tr:hover { background: #fafbfc; }
+
+    /* Order status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-completed { background: #ecfdf5; color: #059669; }
+    .status-shipping { background: #eff6ff; color: #2563eb; }
+    .status-pending { background: #fefce8; color: #ca8a04; }
+    .status-cancelled { background: #fef2f2; color: #dc2626; }
+
+    /* Product image */
+    .product-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .product-name {
+      font-size: 13px;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-sku {
+      font-size: 11px;
+      color: #999;
+    }
+
+    /* Price cells - these are what our extension targets */
+    .order-amount, .price {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Page tabs */
+    .page-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .page-tabs button {
+      padding: 10px 20px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .page-tabs button.active {
+      color: #161823;
+      font-weight: 600;
+      border-bottom-color: #161823;
+    }
+
+    /* Navigation for mock */
+    .mock-nav {
+      background: #fe2c55;
+      color: #fff;
+      padding: 8px 24px;
+      font-size: 12px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .mock-nav a {
+      color: #fff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .mock-nav .label { font-weight: 600; }
+
+    /* Page sections (shown/hidden based on hash) */
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Mock Navigation Banner -->
+  <div class="mock-nav">
+    <span class="label">MOCK TEST PAGE</span>
+    <a onclick="showPage('homepage')">Dashboard</a>
+    <a onclick="showPage('order')">Orders</a>
+    <a onclick="showPage('product')">Products</a>
+    <span style="margin-left:auto;opacity:0.7;">This page simulates TikTok Seller Center for extension testing</span>
+  </div>
+
+  <!-- Top Nav (mimics TikTok Seller Center) -->
+  <div class="top-nav">
+    <div class="logo">TikTok <span>Shop</span> Seller Center</div>
+    <div class="nav-links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Orders</a>
+      <a href="#">Products</a>
+      <a href="#">Marketing</a>
+      <a href="#">Finance</a>
+      <a href="#">Analytics</a>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="section-title">Order</div>
+      <a href="#" onclick="showPage('order')" class="active">Manage Orders</a>
+      <a href="#">Returns & Refunds</a>
+      <div class="section-title">Product</div>
+      <a href="#" onclick="showPage('product')">Manage Products</a>
+      <a href="#">Add Product</a>
+      <div class="section-title">Finance</div>
+      <a href="#">Balance</a>
+      <a href="#">Statements</a>
+      <div class="section-title">Analytics</div>
+      <a href="#">Data Overview</a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ==================== DASHBOARD PAGE ==================== -->
+      <div id="page-homepage" class="page-section active">
+        <h2 class="page-title">Dashboard</h2>
+
+        <div class="dashboard-metrics">
+          <div class="metric-card">
+            <div class="label">Total Revenue (Today)</div>
+            <div class="value">$1,284.50</div>
+            <div class="change">+12.3% vs yesterday</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Orders (Today)</div>
+            <div class="value">23</div>
+            <div class="change">+5 vs yesterday</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Visitors (Today)</div>
+            <div class="value">1,892</div>
+            <div class="change down">-3.2% vs yesterday</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Conversion Rate</div>
+            <div class="value">1.22%</div>
+            <div class="change">+0.1% vs yesterday</div>
+          </div>
+        </div>
+
+        <div class="order-table-container">
+          <div class="table-header">
+            <h3>Recent Orders</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="order-item">
+                <td class="order-id">TS2604030001</td>
+                <td class="product-cell"><div class="product-img">📱</div><div><div class="product-name">Phone Case Clear</div></div></td>
+                <td class="order-amount price">$24.99</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>2026-04-03</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604030002</td>
+                <td class="product-cell"><div class="product-img">🎧</div><div><div class="product-name">Wireless Earbuds Pro</div></div></td>
+                <td class="order-amount price">$49.99</td>
+                <td><span class="status-badge status-shipping">Shipping</span></td>
+                <td>2026-04-03</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604030003</td>
+                <td class="product-cell"><div class="product-img">👕</div><div><div class="product-name">Cotton T-Shirt Basic</div></div></td>
+                <td class="order-amount price">$15.50</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>2026-04-03</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== ORDER LIST PAGE ==================== -->
+      <div id="page-order" class="page-section">
+        <h2 class="page-title">Manage Orders</h2>
+
+        <div class="page-tabs">
+          <button class="active">All Orders</button>
+          <button>Unpaid</button>
+          <button>To Ship</button>
+          <button>Shipping</button>
+          <button>Completed</button>
+          <button>Cancelled</button>
+        </div>
+
+        <div class="order-table-container">
+          <div class="table-toolbar">
+            <select>
+              <option>All Status</option>
+              <option>Completed</option>
+              <option>Shipping</option>
+              <option>Pending</option>
+            </select>
+            <input type="text" placeholder="Search order ID, product name...">
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Order Amount</th>
+                <th>Status</th>
+                <th>Shipping</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="order-item">
+                <td class="order-id">TS2604040001</td>
+                <td class="product-cell">
+                  <div class="product-img">📱</div>
+                  <div>
+                    <div class="product-name">iPhone 15 Pro Max Clear Case</div>
+                    <div class="product-sku">SKU: CASE-IP15PM-CLR</div>
+                  </div>
+                </td>
+                <td>2</td>
+                <td class="order-amount price total">$49.98</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>FBT</td>
+                <td>2026-04-04 09:15</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040002</td>
+                <td class="product-cell">
+                  <div class="product-img">🎧</div>
+                  <div>
+                    <div class="product-name">Wireless Bluetooth Earbuds TWS</div>
+                    <div class="product-sku">SKU: EARB-BT-TWS01</div>
+                  </div>
+                </td>
+                <td>1</td>
+                <td class="order-amount price total">$29.99</td>
+                <td><span class="status-badge status-shipping">Shipping</span></td>
+                <td>Self Ship</td>
+                <td>2026-04-04 10:22</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040003</td>
+                <td class="product-cell">
+                  <div class="product-img">👕</div>
+                  <div>
+                    <div class="product-name">Oversized Cotton Tee - Black</div>
+                    <div class="product-sku">SKU: TEE-OVR-BLK-L</div>
+                  </div>
+                </td>
+                <td>3</td>
+                <td class="order-amount price total">$44.97</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>FBT</td>
+                <td>2026-04-04 11:05</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040004</td>
+                <td class="product-cell">
+                  <div class="product-img">💄</div>
+                  <div>
+                    <div class="product-name">Matte Lipstick Set (6 Colors)</div>
+                    <div class="product-sku">SKU: LIP-MAT-6SET</div>
+                  </div>
+                </td>
+                <td>1</td>
+                <td class="order-amount price total">$18.99</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>FBT</td>
+                <td>2026-04-04 12:30</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040005</td>
+                <td class="product-cell">
+                  <div class="product-img">🔌</div>
+                  <div>
+                    <div class="product-name">USB-C Fast Charger 65W GaN</div>
+                    <div class="product-sku">SKU: CHG-USBC-65W</div>
+                  </div>
+                </td>
+                <td>1</td>
+                <td class="order-amount price total">$35.99</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>Self Ship</td>
+                <td>2026-04-04 13:18</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040006</td>
+                <td class="product-cell">
+                  <div class="product-img">🧴</div>
+                  <div>
+                    <div class="product-name">Vitamin C Serum 30ml</div>
+                    <div class="product-sku">SKU: SKIN-VTC-30</div>
+                  </div>
+                </td>
+                <td>2</td>
+                <td class="order-amount price total">$25.98</td>
+                <td><span class="status-badge status-shipping">Shipping</span></td>
+                <td>FBT</td>
+                <td>2026-04-04 14:02</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040007</td>
+                <td class="product-cell">
+                  <div class="product-img">🎮</div>
+                  <div>
+                    <div class="product-name">Gaming Mouse RGB Wireless</div>
+                    <div class="product-sku">SKU: MOUSE-GM-RGB</div>
+                  </div>
+                </td>
+                <td>1</td>
+                <td class="order-amount price total">$42.99</td>
+                <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                <td>-</td>
+                <td>2026-04-04 08:45</td>
+              </tr>
+              <tr class="order-item">
+                <td class="order-id">TS2604040008</td>
+                <td class="product-cell">
+                  <div class="product-img">🧢</div>
+                  <div>
+                    <div class="product-name">Snapback Cap Embroidered Logo</div>
+                    <div class="product-sku">SKU: CAP-SNAP-EMB</div>
+                  </div>
+                </td>
+                <td>1</td>
+                <td class="order-amount price total">$16.50</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>FBT</td>
+                <td>2026-04-04 15:30</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== PRODUCT LIST PAGE ==================== -->
+      <div id="page-product" class="page-section">
+        <h2 class="page-title">Manage Products</h2>
+
+        <div class="page-tabs">
+          <button class="active">All Products</button>
+          <button>Live</button>
+          <button>Pending</button>
+          <button>Suspended</button>
+          <button>Draft</button>
+        </div>
+
+        <div class="order-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Sales (30d)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">📱</div>
+                  <div>
+                    <div class="product-name">iPhone 15 Pro Max Clear Case</div>
+                    <div class="product-sku">SKU: CASE-IP15PM-CLR</div>
+                  </div>
+                </td>
+                <td class="price amount">$24.99</td>
+                <td>156</td>
+                <td>89</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">🎧</div>
+                  <div>
+                    <div class="product-name">Wireless Bluetooth Earbuds TWS</div>
+                    <div class="product-sku">SKU: EARB-BT-TWS01</div>
+                  </div>
+                </td>
+                <td class="price amount">$29.99</td>
+                <td>78</td>
+                <td>124</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">👕</div>
+                  <div>
+                    <div class="product-name">Oversized Cotton Tee - Black</div>
+                    <div class="product-sku">SKU: TEE-OVR-BLK-L</div>
+                  </div>
+                </td>
+                <td class="price amount">$14.99</td>
+                <td>320</td>
+                <td>256</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">💄</div>
+                  <div>
+                    <div class="product-name">Matte Lipstick Set (6 Colors)</div>
+                    <div class="product-sku">SKU: LIP-MAT-6SET</div>
+                  </div>
+                </td>
+                <td class="price amount">$18.99</td>
+                <td>45</td>
+                <td>67</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">🔌</div>
+                  <div>
+                    <div class="product-name">USB-C Fast Charger 65W GaN</div>
+                    <div class="product-sku">SKU: CHG-USBC-65W</div>
+                  </div>
+                </td>
+                <td class="price amount">$35.99</td>
+                <td>92</td>
+                <td>43</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+              <tr class="product-item">
+                <td class="product-cell">
+                  <div class="product-img">🧴</div>
+                  <div>
+                    <div class="product-name">Vitamin C Serum 30ml</div>
+                    <div class="product-sku">SKU: SKIN-VTC-30</div>
+                  </div>
+                </td>
+                <td class="price amount">$12.99</td>
+                <td>200</td>
+                <td>178</td>
+                <td><span class="status-badge status-completed">Live</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Page navigation for mock
+    function showPage(page) {
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+
+      // Update URL hash to simulate SPA routing
+      // This helps test the extension's route detection
+      window.history.pushState({}, '', '/' + page);
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => {
+      const page = window.location.pathname.replace('/', '') || 'homepage';
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+    });
+  </script>
+</body>
+</html>

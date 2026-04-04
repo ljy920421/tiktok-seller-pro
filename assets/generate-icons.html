@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Icons</title></head>
+<body>
+<p>Right-click each canvas and "Save image as" to save the icons.</p>
+<div>
+  <p>icon-16.png:</p>
+  <canvas id="c16" width="16" height="16"></canvas>
+  <p>icon-48.png:</p>
+  <canvas id="c48" width="48" height="48"></canvas>
+  <p>icon-128.png:</p>
+  <canvas id="c128" width="128" height="128"></canvas>
+</div>
+<script>
+function drawIcon(canvasId, size) {
+  const c = document.getElementById(canvasId);
+  const ctx = c.getContext('2d');
+
+  // Background - dark blue rounded rect
+  ctx.fillStyle = '#1a1a2e';
+  const r = size * 0.15;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, size, size, r);
+  ctx.fill();
+
+  // Dollar sign
+  ctx.fillStyle = '#34d399';
+  ctx.font = `bold ${size * 0.6}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('$', size/2, size/2);
+
+  // Small up arrow
+  ctx.fillStyle = '#34d399';
+  const ax = size * 0.75;
+  const ay = size * 0.25;
+  const as = size * 0.12;
+  ctx.beginPath();
+  ctx.moveTo(ax, ay - as);
+  ctx.lineTo(ax + as, ay + as);
+  ctx.lineTo(ax - as, ay + as);
+  ctx.closePath();
+  ctx.fill();
+}
+
+drawIcon('c16', 16);
+drawIcon('c48', 48);
+drawIcon('c128', 128);
+</script>
+</body>
+</html>
